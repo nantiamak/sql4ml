@@ -73,25 +73,25 @@ For examples, check SQL files in the directory /working_examples.
 
 To run main, type in a terminal:
 
-    ./main linear // To generate TensorFlow code for the Linear Regression model in working_examples/linear_regression.sql
-    ./main logistic // To generate TensorFlow code for the Logistic Regression model in working_examples/logistic_regression.sql
+    ./main linear //To generate TensorFlow code for the Linear Regression model in working_examples/linear_regression.sql
+    ./main logistic //To generate TensorFlow code for the Logistic Regression model in working_examples/logistic_regression.sql
 
 The files with the generated TensorFlow/Python code can be executed like any other TensorFlow program.
 
-Or you can try to translate individual SQL queries by loading sql2tf_translator module in ghci and type:
+You can also try to translate individual SQL queries by loading the sql2tf_translator module in ghci and type:
 
     translateToTensorFlowCommand (L.pack "CREATE VIEW squaredErrors AS SELECT POW(errors.errorValue, 2) AS squaredErrorValue, errors.observationID AS observationID FROM errors;") ["features"] ["weights"] [["f1", "f2"]]
 
 where
 
     translateToTensorFlowCommand :: L.Text -> [String] -> [String] -> [[String]] -> String
-    translateToTensorFlowCommand sql_statement feature_tables variable_tables feature_names = tf_command
+    translateToTensorFlowCommand sql_statement feature_tables variable_tables feature_names
 
 and
 * sql_statement: a SQL create view query in type Text
-* A list of names of the tables storing the features of the model.
-* A list of names of the tables storing the weights of the model.
-* A list of lists, each of which has the actual names of features stored in each table.
+* feature_tables: a list of names of the tables storing the features of the model.
+* variable_tables: a list of names of the tables storing the weights of the model.
+* feature_names: a list of lists, each of which has the actual names of features stored in each table.
 
 
 
