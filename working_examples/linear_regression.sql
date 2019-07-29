@@ -21,11 +21,13 @@
 -- SOFTWARE.
 
 
+-- Observations table
 CREATE TABLE observations (
        observationID VARCHAR(15),
        PRIMARY KEY (observationID)
 );
 
+-- Features table
 CREATE TABLE features (
        observationID VARCHAR(15),
        featureName VARCHAR(30),
@@ -33,18 +35,21 @@ CREATE TABLE features (
        PRIMARY KEY (observationID, featureName)
 );      
 
+-- Linear regression model weights table
 CREATE TABLE weights (
        featureName VARCHAR(30),
        weightValue DOUBLE,
        PRIMARY KEY (featureName)
 );
 
+-- Targets table
 CREATE TABLE targets (
        observationID VARCHAR(15),
        targetValue DOUBLE,
        PRIMARY KEY (observationID)
 );     
 
+-- Prediction function of linear regression
 CREATE VIEW predictions AS
 SELECT SUM(features.featureValue * weights.weightValue) AS predictionValue, features.observationID AS observationID
 FROM features, weights
@@ -60,5 +65,6 @@ CREATE VIEW squaredErrors AS
 SELECT POW(errors.errorValue, 2) AS squaredErrorValue, errors.observationID AS observationID
 FROM errors;
 
-CREATE VIEW sumSquaredError AS
+-- Mean squared error - objective function of linear regression
+CREATE VIEW meanSquaredError AS
 SELECT AVG(squaredErrors.squaredErrorValue) FROM squaredErrors;

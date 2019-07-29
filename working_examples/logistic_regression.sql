@@ -21,11 +21,13 @@
 -- SOFTWARE.
 
 
+-- Observations table
 CREATE TABLE observations (
        observationID INT,
        PRIMARY KEY (observationID)
 );
 
+-- Features table
 CREATE TABLE features (
        observationID INT,
        featureName VARCHAR(10),
@@ -33,12 +35,14 @@ CREATE TABLE features (
        PRIMARY KEY (observationID, featureName)
 );      
 
+-- Logistic regression model weights table
 CREATE TABLE weights (
        featureName VARCHAR(10),
        weightValue DOUBLE,
        PRIMARY KEY (featureName)
 );
 
+-- Labels table
 CREATE TABLE labels (
        observationID INT,
        labelValue DOUBLE,
@@ -46,11 +50,13 @@ CREATE TABLE labels (
 );
 
 
+-- Products between features and weights
 CREATE VIEW product AS SELECT SUM(features.featureValue * weights.weightValue) AS productValue, features.observationID AS observationID
 FROM features, weights
 WHERE features.featureName = weights.featureName
 GROUP BY observationID;
 
+-- Sigmoid function
 CREATE VIEW sigmoid AS SELECT product.observationID AS observationID,
 (1/(1+EXP(-product.productValue))) AS sigmoidValue
 FROM product;
@@ -73,13 +79,7 @@ CREATE VIEW second_part AS SELECT labels.observationID AS observationID,
 FROM labels, log2
 WHERE labels.observationID = log2.observationID;
 
+-- Logistic loss - objective function of logistic regression
 CREATE VIEW loss AS SELECT (-1)*SUM((first_part.firstPartValue + second_part.secondPartValue)) AS lossValue
 FROM first_part, second_part
 WHERE first_part.observationID = second_part.observationID
-
-
-
-
------------ Proxeiro ------------
--- Pivoting features table, all features of an observation in a single row
-SELECT features.observationID AS observationID, SUM(CASE WHEN features.`featureName`='price' THEN features.featureValue ELSE NULL END) AS priceValue, SUM(CASE WHEN features.`featureName`='day' THEN features.featureValue ELSE NULL END) AS dayValue FROM features GROUP BY features.observationID
