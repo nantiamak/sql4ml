@@ -1,6 +1,6 @@
 # sql2tf
 
-sql2tf is a Haskell module that takes as input SQL code which defines a supervised machine
+Sql2tf is a Haskell project that takes as input SQL code which defines a supervised machine
 learning model (ML), as well as a set of parameters, and generates TensorFlow (Python API) code
 that trains this model.
 
@@ -16,7 +16,7 @@ See also the section on installation on how to build dependent projects.
 
 ## Installation
 
-sql2tf uses the open source project queryparser (https://github.com/uber/queryparser), also in Haskell.
+Sql2tf uses the open source project queryparser (https://github.com/uber/queryparser), also in Haskell.
 To build queryparser, follow the instructions on the Github page of the project.
 
 The sql2tf module is in file sql2tf_translator.hs.
@@ -26,11 +26,11 @@ File main.hs containts two examples on how to translate SQL to TensorFlow code e
 
 To compile main.hs, run in a terminal:
 
-   ghc -o main main.hs
+    ghc -o main main.hs
 
 Sql2tf uses the MySQL database (https://www.mysql.com/) for storing data.
-To run the generated TensorFlow code, you need to install it.
-To install MySQL follow the instructions in https://www.mysql.com/.
+To run the generated TensorFlow code, you need to install MySQL.
+To install it follow the instructions in https://www.mysql.com/.
 
 After installing MySQL, you can run the SQL scripts in the directory /db_setups to create two toy databases, one based
 on the Boston Housing dataset (https://www.cs.toronto.edu/~delve/data/boston/bostonDetail.html) and the other based
@@ -56,12 +56,42 @@ You can find two examples of SQL code defining Linear and Logistic Regression in
 * The number of gradient descent iterations.
 * The learning rate used in gradient descent.
 
+Currently sql2tf supports the translation of SQL create view queries of the following form,
+
+CREATE VIEW $(name) AS
+SELECT $(columns), $(numericExpr)
+FROM $(tables)
+WHERE $(joinElement)
+GROUP BY $(groupingElement)
+
+and generate an equivalent TensorFlow expression as below:
+
+$(name) = $(translateNumericExpr(numericExpr))
+
+For examples, check SQL files in the directory /working_examples.
+
+
 To run main, type in a terminal:
 
-   ./main linear // To generate TensorFlow code for the Linear Regression model in working_examples/linear_regression.sql
-   ./main logistic // To generate TensorFlow code for the Logistic Regression model in working_examples/logistic_regression.sql
+    ./main linear // To generate TensorFlow code for the Linear Regression model in working_examples/linear_regression.sql
+    ./main logistic // To generate TensorFlow code for the Logistic Regression model in working_examples/logistic_regression.sql
 
 The files with the generated TensorFlow/Python code can be executed like any other TensorFlow program.
+
+Or you can try to translate individual SQL queries by loading sql2tf_translator module in ghci and type:
+
+    translateToTensorFlowCommand (L.pack "CREATE VIEW squaredErrors AS SELECT POW(errors.errorValue, 2) AS squaredErrorValue, errors.observationID AS observationID FROM errors;") ["features"] ["weights"] [["f1", "f2"]]
+
+where
+
+    translateToTensorFlowCommand :: L.Text -> [String] -> [String] -> [[String]] -> String
+    translateToTensorFlowCommand sql_statement feature_tables variable_tables feature_names = tf_command
+
+and
+* sql_statement: a SQL create view query in type Text
+* A list of names of the tables storing the features of the model.
+* A list of names of the tables storing the weights of the model.
+* A list of lists, each of which has the actual names of features stored in each table.
 
 
 
