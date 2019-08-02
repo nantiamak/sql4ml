@@ -42,7 +42,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections #-}
 
-module Sql2tf_translator
+module Sql4ml_translator
   (endToEndTranslate) where
 
 import Data.Aeson

@@ -22,7 +22,7 @@
 
 module Main where
 
-import Sql2tf_translator
+import Sql4ml_translator
 import System.Environment
 import qualified Data.Map as M
 

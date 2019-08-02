@@ -1,11 +1,12 @@
-# sql2tf
+# sql4ml
 
-Sql2tf is a Haskell project that takes as input SQL code which defines a supervised machine
-learning model (ML), as well as a set of parameters, and generates TensorFlow (Python API) code
+Sql4ml is a Haskell project that takes as input SQL code which defines the objective/cost/loss function of a
+supervised machine learning model (ML), as well as a set of parameters, and generates TensorFlow (Python API) code
 that trains this model.
 
 It is the prototype that is used in the paper
-"Nantia Makrynioti, Ruy Ley-Wild and Vasilis Vassalos. sql4ml: a declarative end-to-end workflow for machine learning.".
+"Nantia Makrynioti, Ruy Ley-Wild and Vasilis Vassalos. sql4ml: a declarative end-to-end workflow for machine learning."
+(https://arxiv.org/abs/1907.12415).
 
 ## Requirements
 
@@ -16,10 +17,10 @@ See also the section on installation on how to build dependent projects.
 
 ## Installation
 
-Sql2tf uses the open source project queryparser (https://github.com/uber/queryparser), also in Haskell.
+Sql4ml uses the open source project queryparser (https://github.com/uber/queryparser), also in Haskell.
 To build queryparser, follow the instructions on the Github page of the project.
 
-The sql2tf module is in file sql2tf_translator.hs.
+The sql4ml module is in file sql4ml_translator.hs.
 You can load the module via ghci.
 
 File main.hs containts two examples on how to translate SQL to TensorFlow code end-to-end.
@@ -28,7 +29,7 @@ To compile main.hs, run in a terminal:
 
     ghc -o main main.hs
 
-Sql2tf uses the MySQL database (https://www.mysql.com/) for storing data.
+Sql4ml uses the MySQL database (https://www.mysql.com/) for storing data.
 To run the generated TensorFlow code, you need to install MySQL.
 To install it follow the instructions in https://www.mysql.com/.
 
@@ -56,7 +57,7 @@ You can find two examples of SQL code defining Linear and Logistic Regression in
 * The number of gradient descent iterations.
 * The learning rate used in gradient descent.
 
-Currently sql2tf supports the translation of SQL create view queries of the following form,
+Currently sql4ml supports the translation of SQL create view queries of the following form,
 
 CREATE VIEW $(name) AS
 SELECT $(columns), $(numericExpr)
@@ -78,7 +79,7 @@ To run main, type in a terminal:
 
 The files with the generated TensorFlow/Python code can be executed like any other TensorFlow program.
 
-You can also try to translate individual SQL queries by loading the sql2tf_translator module in ghci and type:
+You can also try to translate individual SQL queries by loading the sql4ml_translator module in ghci and type:
 
     translateToTensorFlowCommand (L.pack "CREATE VIEW squaredErrors AS SELECT POW(errors.errorValue, 2) AS squaredErrorValue, errors.observationID AS observationID FROM errors;") ["features"] ["weights"] [["f1", "f2"]]
 
@@ -92,10 +93,6 @@ and
 * feature_tables: a list of names of the tables storing the features of the model.
 * variable_tables: a list of names of the tables storing the weights of the model.
 * feature_names: a list of lists, each of which has the actual names of features stored in each table.
-
-
-
-
 
 
 
