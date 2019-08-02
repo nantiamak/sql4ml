@@ -59,15 +59,15 @@ You can find two examples of SQL code defining Linear and Logistic Regression in
 
 Currently sql4ml supports the translation of SQL create view queries of the following form,
 
-CREATE VIEW $(name) AS
-SELECT $(columns), $(numericExpr)
-FROM $(tables)
-WHERE $(joinElement)
-GROUP BY $(groupingElement)
+    CREATE VIEW $(name) AS
+    SELECT $(columns), $(numericExpr)
+    FROM $(tables)
+    WHERE $(joinElement)
+    GROUP BY $(groupingElement)
 
 and generate an equivalent TensorFlow expression as below:
 
-$(name) = $(translateNumericExpr(numericExpr))
+    $(name) = $(translateNumericExpr(numericExpr))
 
 For examples, check SQL files in the directory /working_examples.
 
